@@ -1,66 +1,62 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-// console.log(galleryItems);
-// const allImgDescription = galleryItems.flatMap(
-//   (galleryItem) => galleryItem.description
-// );
-
-// const allImgUrl = galleryItems.flatMap((galleryItem) => galleryItem.original);
-
-// console.log(allImgDescription);
-// console.log(allImgUrl);
-
+// ===== 1. Создание и рендер разметки по массиву данных galleryItems
+// и предоставленному шаблону элемента галереи.
 const gallery = document.querySelector(".gallery");
 
 const markup = galleryItems
   .map(
     ({ preview, original, description }) =>
-      `<li class="galary__item"><img class="galary__img" width="100%" data-source="${preview}" src="${original}" alt="${description}"></li>`
+      `<div class="gallery__item">
+            <a class="gallery__link" href="${original}">
+                <img
+                    class="gallery__image"
+                    src="${preview}"
+                    data-source="${original}"
+                    alt="${description}"
+                />
+            </a>
+        </div>`
   )
   .join("");
 
 gallery.insertAdjacentHTML("afterbegin", markup);
 
-// import * as basicLightbox from "basiclightbox";
+function selectImg(event) {
+  event.preventDefault();
+  // ====== 2. Реализация делегирования на div.gallery и получение url большого изображения.
+  const selectedImg = event.target.dataset.source;
 
-// const instance = basicLightbox.create(`
-//     <img src="assets/images/image.png" width="800" height="600">
-// `);
+  // ====== 3. Подключение скрипта и стилей библиотеки модального окна basicLightbox.
+  // Используй CDN сервис jsdelivr и добавь в проект ссылки на минифицированные(.min) файлы библиотеки.
+  // ====== 4. Открытие модального окна по клику на элементе галереи.
+  // Для этого ознакомься с документацией и примерами.
+  const instance = basicLightbox.create(`<img src=${selectedImg}>`);
 
-// instance.show();
+  instance.show();
+}
 
-// gallery.addEventListener("click", selectImg);
+function closeEscape(event) {
+  const instance = basicLightbox.create(`<img src="">`);
+  if (event.key === "Escape") {
+    // console.log(instance);
+    instance.close(() => console.log("lightbox not visible anymore"));
 
-// This is where delegation «magic» happens
-// function selectImg(event) {
-//   if (event.target.nodeName !== "IMG") {
-//     return;
-//   }
+    return;
+  }
+}
 
-//   //   const selectedColor = event.target.dataset.color;
-//   //   output.textContent = `Selected color: ${selectedColor}`;
-//   //   output.style.color = selectedColor;
-// }
+// const instance = basicLightbox.create(`<img src="" />`, {
+//   onShow: () => {
+//     window.addEventListener("keydown", closeEscape);
+//   },
+//   onClose: () => {
+//     window.removeEventListener("keydown", closeEscape);
+//   },
+// });
 
-// Some helper functions to render palette items
-// createGalleryItems();
-
-// function createGalleryItems() {
-//   const items = [];
-//   for (let i = 0; i < galleryItems.length; i++) {
-//     // const color = getRangomColor();
-
-//     const item = document.createElement("img");
-//     item.src = galleryItems.flatMap((galleryItem) => galleryItem.original);
-//     // item.dataset.source = galleryItems.flatMap(
-//     //   (galleryItem) => galleryItem.original
-//     // );
-//     item.alt = galleryItems.flatMap((galleryItem) => galleryItem.description);
-//     // item.style.backgroundColor = color;
-//     // item.classList.add("item");
-//     items.push(item);
-//   }
-//   gallery.append(...items);
-// }
-// console.log(gallery);
+gallery.addEventListener("click", selectImg);
+window.addEventListener("keydown", closeEscape);
+// window.removeEventListener("keydown", closeEscape);
+console.log(galleryItems);
